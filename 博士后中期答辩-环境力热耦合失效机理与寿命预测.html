@@ -914,33 +914,97 @@ footer strong{color:#fff}
 
 
   <!-- 2.1.3 氙灯加速 -->
-<div class="card">
-  <div class="card-title"><span class="dot"></span>2.1.3 氙灯加速与户外相关性 — 回答 Q3（光热部分）</div>
+  <div class="card">
+    <div class="card-title"><span class="dot"></span>2.1.3 氙灯加速与户外相关性 — 回答 Q3（光热部分）</div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
-    <div style="background:#e8f0ff;border:1.5px solid #7aadea;border-radius:8px;padding:16px">
-      <div style="font-weight:700;color:#2563be;margin-bottom:6px">☀️ 辐照量等效法</div>
-      <div style="font-size:2rem;font-weight:800;color:#2563be">7–8×</div>
-      <div style="font-size:.82rem;color:var(--text-light);margin-top:6px">固定值，仅基于UV辐照量计算（陆河1月≈氙灯113h）。适用于无防护体系。忽略温度/湿度/应力差异。推荐用于快速初筛。</div>
+    <!-- 加速倍率 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+      <div style="background:#e8f0ff;border:1.5px solid #7aadea;border-radius:8px;padding:16px">
+        <div style="font-weight:700;color:#2563be;margin-bottom:6px">☀️ 辐照量等效法</div>
+        <div style="font-size:2rem;font-weight:800;color:#2563be">7–8×</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:6px">固定值，仅基于UV辐照量计算（陆河1月≈氙灯113h）。适用于无防护体系。</div>
+      </div>
+      <div style="background:#fff7f0;border:1.5px solid #f0a060;border-radius:8px;padding:16px">
+        <div style="font-weight:700;color:var(--accent);margin-bottom:6px">📊 性能等效法（OIT归零时间比）</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--accent)">3–19×</div>
+        <div style="font-size:.82rem;color:var(--text-light);margin-top:6px">取决于管材类型和所选指标，更接近真实加速效果。范围宽主因各管材对温度/湿度敏感度不同。</div>
+      </div>
     </div>
-    <div style="background:#fff7f0;border:1.5px solid #f0a060;border-radius:8px;padding:16px">
-      <div style="font-weight:700;color:var(--accent);margin-bottom:6px">📊 性能等效法（OIT归零时间比）</div>
-      <div style="font-size:2rem;font-weight:800;color:var(--accent)">3–19×</div>
-      <div style="font-size:.82rem;color:var(--text-light);margin-top:6px">取决于管材类型和所选指标。更接近真实加速效果。推荐用于防护型管材的寿命预测。范围宽主因各管材对温度/湿度/应力敏感度不同。</div>
+
+    <!-- OIT氙灯衰减曲线 -->
+    <div style="margin:18px 0">
+      <div style="font-weight:700;color:var(--primary);margin-bottom:6px">📈 氙灯加速OIT衰减曲线 — 三种PPR管材外层OIT对比</div>
+      <p style="font-size:.78rem;color:var(--text-light);margin-bottom:8px">不打压条件 · 虚线标注户外等效辐照时间（陆河1月≈113h，新疆1月≈188h，陆河3月≈382h）</p>
+      <div id="chart-xenon-oit" style="width:100%;height:420px"></div>
+      <script>
+        (function() {
+          var data = [
+            {
+              x: [0, 113, 188, 382, 591, 855, 964, 1503, 1770],
+              y: [22.0, 4.4, 0.3, 0.2, 0.2, 0.2, 0.5, 0.2, 0.1],
+              mode: 'lines+markers',
+              name: '单层管（无防护）',
+              line: {color: '#c0392b', width: 3},
+              marker: {color: '#c0392b', size: 8, symbol: 'circle'}
+            },
+            {
+              x: [0, 113, 188, 382, 591, 855, 964, 1503, 1770],
+              y: [49.9, 15.3, 7.7, 1.1, 0.6, 0.4, 0.7, 0.3, 0.2],
+              mode: 'lines+markers',
+              name: '双层挤出型（HALS）',
+              line: {color: '#e05a1e', width: 3},
+              marker: {color: '#e05a1e', size: 8, symbol: 'diamond'}
+            },
+            {
+              x: [0, 113, 188, 382, 591, 855, 964, 1503, 1770],
+              y: [22.3, 21.8, 20.4, 24.4, 12.8, 11.5, 8.6, 3.9, 2.6],
+              mode: 'lines+markers',
+              name: 'PE外覆型（炭黑）',
+              line: {color: '#2e8b57', width: 3},
+              marker: {color: '#2e8b57', size: 8, symbol: 'square'}
+            }
+          ];
+          var layout = {
+            template: {layout:{paper_bgcolor:'white',plot_bgcolor:'white',font:{color:'#2a3f5f',family:'Segoe UI,PingFang SC,Microsoft YaHei,sans-serif',size:12},xaxis:{gridcolor:'#EBF0F8',zerolinecolor:'#EBF0F8'},yaxis:{gridcolor:'#EBF0F8',zerolinecolor:'#EBF0F8'}}},
+            xaxis: {title: {text: '氙灯辐照时间 (h)', font: {size: 13}}, dtick: 200},
+            yaxis: {title: {text: '外层OIT (min)', font: {size: 13}}, type: 'log', dtick: 1},
+            legend: {orientation: 'h', y: -0.25, x: 0.5, xanchor: 'center'},
+            margin: {l: 60, r: 30, t: 10, b: 80},
+            height: 420,
+            shapes: [
+              {type: 'line', x0: 113, x1: 113, y0: 0.05, y1: 60, line: {color: '#1a3a5c', width: 1, dash: 'dot'}, layer: 'below'},
+              {type: 'line', x0: 188, x1: 188, y0: 0.05, y1: 60, line: {color: '#1a3a5c', width: 1, dash: 'dot'}, layer: 'below'},
+              {type: 'line', x0: 382, x1: 382, y0: 0.05, y1: 60, line: {color: '#1a3a5c', width: 1, dash: 'dot'}, layer: 'below'}
+            ],
+            annotations: [
+              {x: 113, y: 1, text: '陆河1月', showarrow: false, font: {size: 10, color: '#1a3a5c'}, xanchor: 'left', yanchor: 'bottom'},
+              {x: 188, y: 1, text: '新疆1月', showarrow: false, font: {size: 10, color: '#1a3a5c'}, xanchor: 'left', yanchor: 'bottom'},
+              {x: 382, y: 1, text: '陆河3月', showarrow: false, font: {size: 10, color: '#1a3a5c'}, xanchor: 'left', yanchor: 'bottom'}
+            ]
+          };
+          Plotly.newPlot('chart-xenon-oit', data, layout, {responsive: true});
+        })();
+      </script>
+    </div>
+
+    <!-- 加速倍率对比表 -->
+    <div class="table-wrap" style="margin-top:18px"><table>
+      <thead><tr><th>管材类型</th><th>计算方法</th><th>指标</th><th>加速倍率</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td>PPR单层管</td><td>辐照量等效</td><td>—</td><td class="td-good">7–8×</td><td>固定，基于辐照量</td></tr>
+        <tr><td>PPR单层管</td><td>性能等效(OIT)</td><td>OIT归零时间</td><td class="td-warn">~3×</td><td>户外1月vs氙灯113h</td></tr>
+        <tr><td>双层挤出型</td><td>性能等效(OIT)</td><td>OIT归零时间</td><td class="td-warn">5–7×</td><td>户外3月vs氙灯382h</td></tr>
+        <tr><td>PE外覆型</td><td>性能等效(OIT)</td><td>OIT降至80%时间</td><td class="td-good">>19×</td><td>1770h后OIT仍>10%，远超户外等效</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="alert info" style="margin-top:14px">
+      <span class="alert-icon">🔬</span>
+      <div><strong>关键发现：</strong>氙灯加速的OIT衰减曲线与户外暴晒呈现高度一致的排序——PE外覆型全程缓慢衰减（1770h后OIT仍有2.6 min），双层挤出型在382h（等效3月）OIT降至1.1 min，单层管在113h（等效1月）已降至4.4 min。辐照量等效法（7-8×）适用于无防护管材的初筛，性能等效法更适用于评估防护体系的实际加速效果。炭黑物理屏蔽方案在氙灯条件下同样表现出远超化学防护的持久稳定性。</div>
     </div>
   </div>
 
-  <div class="table-wrap"><table>
-    <thead><tr><th>管材类型</th><th>计算方法</th><th>指标</th><th>加速倍率</th><th>备注</th></tr></thead>
-    <tbody>
-      <tr><td>PPR单层管</td><td>辐照量等效</td><td>—</td><td class="td-good">7–8×</td><td>固定，基于辐照量</td></tr>
-      <tr><td>PPR单层管</td><td>性能等效(OIT)</td><td>OIT归零时间</td><td class="td-warn">~3×</td><td>户外1月vs氙灯113h</td></tr>
-    </tbody>
-  </table></div>
-  <div class="footnote">辐照量等效法仅考虑UV辐照，忽略温度/湿度/应力差异；性能等效法更接近真实加速效果。建议对防护型管材引入Arrhenius温度修正因子。</div>
-</div>
-
-<!-- 2.1.4 其他管材 -->
+  <!-- 2.1.4 其他管材 -->
 <div class="card">
   <div class="card-title"><span class="dot"></span>2.1.4 其他管材（PERT/PEX/PVC）关键结论</div>
   <p style="font-size:.85rem;color:var(--text-light);margin-bottom:14px">以下汇总PERT、PEX和PVC三类管材的关键老化结论，与前述PPR数据共同构成本研究的全品类抗UV性能数据库。</p>
