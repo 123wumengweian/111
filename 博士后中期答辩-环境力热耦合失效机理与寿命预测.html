@@ -752,7 +752,34 @@ footer strong{color:#fff}
     <!-- 梯度OIT表 -->
     <div style="margin:16px 0">
       <div style="font-weight:700;color:var(--primary);margin-bottom:10px">🔬 沿壁厚梯度OIT数据（外层→中层→内层）</div>
-      <div class="table-wrap"><table>
+          <div style="margin:16px 0">
+      <div style="font-weight:700;color:var(--primary);margin-bottom:6px">📊 沿壁厚OIT梯度变化 — 单层PPR管"氧耗屏障效应"可视化</div>
+      <p style="font-size:.78rem;color:var(--text-light);margin-bottom:8px">外层·中层·内层OIT随老化时间变化 · 3月中外层OIT塌陷后中内层OIT反常升高→6月全穿透</p>
+      <div id="chart-grad-oit-bar" style="width:100%;height:380px"></div>
+      <script>
+        (function() {
+          var stages = ["原始", "陆河3月通水", "陆河6月不通水", "陆河6月通水", "陆河12月通水"];
+          var trace1 = {x: stages, y: [22.0, 0.2, 0.2, 0.2, 0.2], type: "bar", name: "外层", marker: {color: "#c0392b"}};
+          var trace2 = {x: stages, y: [14.4, 22.2, 25.1, 0.2, 13.0], type: "bar", name: "中层", marker: {color: "#e05a1e"}};
+          var trace3 = {x: stages, y: [5.5, 32.1, 23.3, 0.2, 22.2], type: "bar", name: "内层", marker: {color: "#2e8b57"}};
+          var layout = {
+            barmode: "group", bargap: 0.15,
+            template: {layout:{paper_bgcolor:"white",plot_bgcolor:"white",font:{color:"#2a3f5f",size:12,family:"Segoe UI,PingFang SC,Microsoft YaHei,sans-serif"},xaxis:{gridcolor:"#EBF0F8"},yaxis:{gridcolor:"#EBF0F8"}}},
+            yaxis: {title: {text: "OIT (min)", font: {size:13}}},
+            legend: {orientation: "h", y: -0.3, x: 0.5},
+            margin: {l: 50, r: 20, t: 10, b: 80},
+            height: 380,
+            annotations: [
+              {x: "陆河3月通水", y: 36, text: "⚠ 氧耗屏障<br>中外层OIT反升", showarrow: true, arrowhead: 2, ax: 0, ay: -45, font: {size: 10, color: "#c0392b"}, bgcolor: "rgba(255,255,255,0.85)"},
+              {x: "陆河6月通水", y: 5, text: "全穿透<br>三层归零", showarrow: true, arrowhead: 2, ax: 0, ay: -45, font: {size: 10, color: "#c0392b"}, bgcolor: "rgba(255,255,255,0.85)"}
+            ]
+          };
+          Plotly.newPlot("chart-grad-oit-bar", [trace1, trace2, trace3], layout, {responsive: true});
+        })();
+      </script>
+    </div>
+
+    <!-- <div class="table-wrap"><table>
         <thead><tr><th>管材类型</th><th>层位</th><th>原始OIT</th><th>陆河3月通水</th><th>陆河6月通水</th><th>状态评价</th></tr></thead>
         <tbody>
           <tr><td rowspan="3"><strong>单层管</strong></td><td>外层</td><td>22.0</td><td class="td-danger">0.2</td><td class="td-danger">0.2</td><td><span class="tag tag-red">归零</span></td></tr>
@@ -1045,6 +1072,57 @@ footer strong{color:#fff}
         <div style="color:var(--danger);font-size:1.3rem;padding:0 8px;font-weight:700">↘</div>
         <div class="mech-step" style="border-color:#e07070;background:#fde8e8"><strong>氧化裂解</strong>伸长率↓<br>韧性丧失</div>
       </div>
+
+      <!-- 热空气老化数据 -->
+      <div style="margin-top:16px">
+        <div style="font-weight:700;color:var(--primary);margin-bottom:8px">🔥 PVC国标排水管热空气老化 — 断裂伸长率保留率</div>
+        <div class="table-wrap"><table style="font-size:12.5px">
+          <thead><tr><th>取样时间(天)</th><th>110℃</th><th>100℃</th><th>90℃</th><th>备注</th></tr></thead>
+          <tbody>
+            <tr><td><strong>0</strong></td><td class="td-good">100%</td><td class="td-good">100%</td><td class="td-good">100%</td><td>原始伸长率149%</td></tr>
+            <tr><td><strong>3</strong></td><td class="td-good">80.5%</td><td class="td-good">89.9%</td><td>—</td><td></td></tr>
+            <tr><td><strong>7</strong></td><td class="td-warn">67.1%</td><td class="td-warn">77.2%</td><td class="td-warn">77.2%</td><td></td></tr>
+            <tr><td><strong>14</strong></td><td class="td-good">84.6%</td><td>—</td><td>—</td><td></td></tr>
+            <tr><td><strong>21</strong></td><td class="td-danger">34.9%</td><td class="td-warn">51.7%</td><td class="td-good">79.9%</td><td>110℃已<50%</td></tr>
+            <tr><td><strong>42</strong></td><td>—</td><td class="td-danger">33.6%</td><td class="td-good">73.8%</td><td>100℃已<50%</td></tr>
+            <tr><td><strong>105</strong></td><td>—</td><td>—</td><td class="td-danger">48.3%</td><td>90℃接近50%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="footnote">110℃ 21天断裂伸长率保留率34.9%（<50%），确定为最高加速温度。正式测试温度：80、90、100、110℃（10℃间隔）。</div>
+      </div>
+
+      <!-- Arrhenius寿命预测 -->
+      <div style="margin:16px 0">
+        <div style="font-weight:700;color:var(--primary);margin-bottom:8px">📐 Arrhenius寿命外推 — 基于断裂伸长率50%保留时间</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <div style="background:#fde8e8;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:.75rem;color:var(--text-light)">110℃ · t₅₀</div>
+            <div style="font-size:1.6rem;font-weight:800;color:#c0392b">~18天</div>
+          </div>
+          <div style="background:#fff3e0;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:.75rem;color:var(--text-light)">100℃ · t₅₀</div>
+            <div style="font-size:1.6rem;font-weight:800;color:#e05a1e">~22天</div>
+          </div>
+          <div style="background:#e6f7ee;border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:.75rem;color:var(--text-light)">90℃ · t₅₀</div>
+            <div style="font-size:1.6rem;font-weight:800;color:#2e8b57">~105天</div>
+          </div>
+        </div>
+        <div style="background:#f0f4f8;border-radius:8px;padding:14px;margin-bottom:10px">
+          <div style="font-weight:700;color:var(--primary);margin-bottom:4px">Arrhenius参数</div>
+          <div style="font-size:.82rem;color:var(--text-light);line-height:1.7">
+            <strong>活化能 Ea ≈ 99 kJ/mol</strong>（典型PVC脱HCl热降解范围）<br>
+            外推公式：ln(t₅₀) = −28.2 + 11930/T<br>
+            <strong>35℃（户外管表温度）样条t₅₀ ≈ 96年 → 管材寿命 > 150年</strong>（壁厚保护因子 2-3×）<br>
+            <strong>40℃（高温暴晒）样条t₅₀ ≈ 52年 → 管材寿命 > 80年</strong>
+          </div>
+        </div>
+        <div class="alert info">
+          <span class="alert-icon">⚠️</span>
+          <div><strong>注意事项：</strong>以上为纯热氧老化外推，未计入UV光老化加速效应。户外实际寿命应取热氧与光氧的较小值。管材因壁厚效应寿命显著高于样条（表面积/体积比更低，氧扩散路径更长）。80℃数据仍在测试中，后续将以四温度点修正模型精度。</div>
+        </div>
+      </div>
+
       <div class="alert success" style="margin-top:12px"><span class="alert-icon">✅</span><div>110℃下21天伸长保留率仅34.9%，28天跌破50%。<strong>110℃可作为PVC给水管的最高加速温度</strong>，正式测试温度为80、90、100和110℃。爆破压力反常升高（1.18→3.70 MPa）是重要发现——脱HCl→多烯交联的竞争路径需配合数据图进一步说明。</div></div>
     </div>
   </details>
